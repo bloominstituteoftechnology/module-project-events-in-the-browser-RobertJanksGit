@@ -77,38 +77,37 @@ function moduleProject2() {
   document.addEventListener("keydown", (evt) => {
     // 👉 TASK 3 - Use the arrow keys to highlight a new square 👈
     let targetedSquare = document.querySelector(".targeted");
-    let iCounter = 0;
+    let iCounter;
     for (let i = 0; i < targetedSquare.parentElement.children.length; i++) {
       if (
-        targetedSquare.parentElement.children[i].className !== "square targeted"
+        targetedSquare.parentElement.children[i].classList.contains("targeted")
       ) {
-        iCounter++;
-      } else if (
-        targetedSquare.parentElement.children[i].className === "square targeted"
-      ) {
+        iCounter = i;
         break;
       }
     }
 
+    const removeTargetedClasss = () =>
+      targetedSquare.classList.remove("targeted");
     if (
       evt.key === "ArrowLeft" &&
       targetedSquare.previousElementSibling !== null
     ) {
-      targetedSquare.classList.remove("targeted");
+      removeTargetedClasss();
       targetedSquare.previousElementSibling.classList.add("targeted");
     }
     if (
       evt.key === "ArrowRight" &&
       targetedSquare.nextElementSibling !== null
     ) {
-      targetedSquare.classList.remove("targeted");
+      removeTargetedClasss();
       targetedSquare.nextElementSibling.classList.add("targeted");
     }
     if (
       evt.key === "ArrowUp" &&
       targetedSquare.parentElement.previousElementSibling !== null
     ) {
-      targetedSquare.classList.remove("targeted");
+      removeTargetedClasss();
       targetedSquare.parentElement.previousElementSibling.children[
         iCounter
       ].classList.add("targeted");
@@ -117,14 +116,41 @@ function moduleProject2() {
       evt.key === "ArrowDown" &&
       targetedSquare.parentElement.nextElementSibling !== null
     ) {
-      targetedSquare.classList.remove("targeted");
+      removeTargetedClasss();
       targetedSquare.parentElement.nextElementSibling.children[
         iCounter
       ].classList.add("targeted");
     }
 
     // 👉 TASK 4 - Use the space bar to exterminate a mosquito 👈
+    let mosquitoImg = document.querySelector(".square.targeted img");
+    let allMosquitoImg = document.querySelectorAll("img");
+    if (
+      evt.key === " " &&
+      mosquitoImg.getAttribute("data-status") === "alive"
+    ) {
+      mosquitoImg.setAttribute("data-status", "dead");
+      targetedSquare.setAttribute("style", "background-color: red");
+    }
     // 👉 TASK 5 - End the game 👈
+    let liveMosquitos = document.querySelectorAll("[data-status=alive]");
+    if (!liveMosquitos.length) {
+      let elapsed = getTimeElapsed();
+      document.querySelector(
+        "p.info"
+      ).textContent = `Extermination completed in ${elapsed / 1000} seconds!`;
+
+      let restartBtn = document.createElement("button");
+      restartBtn.textContent = "Restart";
+      restartBtn.addEventListener("click", () => {
+        location.reload();
+      });
+      document
+        .querySelector("h2")
+        .insertAdjacentElement("beforeend", restartBtn);
+    }
+
+    // for (let i = 0; i < 5; i++) {}
   });
   // 👆 WORK WORK ABOVE THIS LINE 👆
 }
